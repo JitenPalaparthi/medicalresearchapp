@@ -8,6 +8,7 @@ import 'models/field.dart' as model_field;
 import 'models/projectData.dart' as model_projectData;
 import 'apis/endpoints.dart';
 import 'components/appbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NewEntryPage extends StatefulWidget {
   @override
@@ -17,15 +18,19 @@ class NewEntryPage extends StatefulWidget {
 class _NewEntryPageState extends State<NewEntryPage> {
   final mainKey = GlobalKey<ScaffoldState>();
 
-  String token, _mySelection;
+  String _mySelection, token, role, email;
   bool isLoaded = false, isDDLoaded = false;
   model_template.Template templateData = new model_template.Template();
   model_projectData.ProjectData projectData;
   List<model_template.TemplateMetaData> listMetaData = [];
 
   void getInit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString("token");
+    email = prefs.getString("email");
+    role = prefs.getString("role");
     var metaData = await api_template.Template().getTemplateMetaData(
-        EndPoint.BASE_URL + EndPoint.GET_TEMPLATEMETADATA, "");
+        EndPoint.BASE_URL + EndPoint.GET_TEMPLATEMETADATA, token);
 
     setState(() {
       listMetaData = metaData;
@@ -46,7 +51,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: setAppbar("New Medical Research Data"),
+      appBar: setAppbar(context, "New Medical Research Data"),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
             margin: EdgeInsets.fromLTRB(20, 5, 5, 5),
@@ -69,7 +74,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
                     EndPoint.BASE_URL +
                         EndPoint.GET_TEMPLATEBYID +
                         _mySelection,
-                    "");
+                    token);
                 setState(() {
                   templateData = data;
                   isLoaded = true;
@@ -112,7 +117,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
         });
       });
       var result = await api_projectData.ProjectData().addProjectData(
-          EndPoint.BASE_URL + EndPoint.ADD_PROJECTDATA, "", projectData);
+          EndPoint.BASE_URL + EndPoint.ADD_PROJECTDATA, token, projectData);
       if (result.status == "success") {
         final snackBar =
             SnackBar(content: Text('Project data successfully saved'));
@@ -159,6 +164,9 @@ class _NewEntryPageState extends State<NewEntryPage> {
           break;
         case "dropDown":
           listWidgets.add(_getDropDown(element, gindex, findex));
+          break;
+        case "datepicker":
+          listWidgets.add(_getDatePicker(element, gindex, findex));
           break;
         default:
       }
@@ -220,6 +228,49 @@ class _NewEntryPageState extends State<NewEntryPage> {
     );
   }
 
+  Widget _getDatePicker(model_field.Field field, int gindex, findex) {
+    return Container(
+      width: 300,
+      height: 75,
+      margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: field.label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
+        child: OutlinedButton(
+          onPressed: () async {
+            //DateTime _date = DateTime(2020, 11, 17);
+            final DateTime newDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2017, 1),
+              lastDate: DateTime(2022, 7),
+              helpText: 'Select a date',
+            );
+            if (newDate != null) {
+              setState(() {
+                // _date = newDate;
+                var dateParse = DateTime.parse(newDate.toString());
+
+                var formattedDate =
+                    "${dateParse.day}-${dateParse.month}-${dateParse.year}";
+                templateData.groups[gindex].fields[findex].value =
+                    formattedDate;
+              });
+            }
+          },
+          child: Text(templateData.groups[gindex].fields[findex].value ??
+              'Select Date'),
+          key: Key(field.id),
+        ),
+        // //SizedBox(height: 8),
+      ),
+    );
+  }
+
   Widget _getDropDown(model_field.Field field, int gindex, findex) {
     return Container(
       width: 300,
@@ -252,12 +303,19 @@ class _NewEntryPageState extends State<NewEntryPage> {
   }
 
   Widget _getExpansionTileByGroup(model_group.Group group, int gindex) {
-    return Container(
-      child: Card(
-          elevation: 5,
-          child: Wrap(
+    return Card(
+      child: Column(
+        children: [
+          Container(
+              margin: EdgeInsets.fromLTRB(20, 5, 5, 5),
+              child: Text(group.header)),
+          Wrap(
               alignment: WrapAlignment.start,
-              children: _getWidgetList(group.fields, gindex))),
+              children: _getWidgetList(group.fields, gindex))
+        ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+      elevation: 5,
     );
   }
 }

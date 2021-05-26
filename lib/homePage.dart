@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: setAppbar("Medical Research"),
+      appBar: setAppbar(context, "Medical Research"),
       drawer: Container(),
       body: Container(),
     );

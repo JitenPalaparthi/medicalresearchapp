@@ -5,6 +5,7 @@ import 'models/template.dart' as model_template;
 import 'models/projectData.dart' as model_projectData;
 import 'apis/endpoints.dart';
 import 'components/appbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewRecordsPage extends StatefulWidget {
   final String title;
@@ -17,15 +18,19 @@ class ViewRecordsPage extends StatefulWidget {
 }
 
 class _ViewRecordsPageState extends State<ViewRecordsPage> {
-  String token, _mySelection;
+  String token, _mySelection, role, email;
   bool isLoaded = false, isDDLoaded = false;
   List<model_projectData.ProjectData> projectData = [];
   List<model_template.TemplateMetaData> listMetaData = [];
   final mainKey = GlobalKey<ScaffoldState>();
 
   void getInit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString("token");
+    email = prefs.getString("email");
+    role = prefs.getString("role");
     var metaData = await api_template.Template().getTemplateMetaData(
-        EndPoint.BASE_URL + EndPoint.GET_TEMPLATEMETADATA, "");
+        EndPoint.BASE_URL + EndPoint.GET_TEMPLATEMETADATA, token);
 
     setState(() {
       listMetaData = metaData;
@@ -46,7 +51,7 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: setAppbar("View Medical Research Data"),
+      appBar: setAppbar(context, "View Medical Research Data"),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
             margin: EdgeInsets.fromLTRB(20, 5, 5, 5),
@@ -70,7 +75,7 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
                             EndPoint.GETALL_PROJECTDATA +
                             "/0/0/?_templateId=" +
                             _mySelection,
-                        "",
+                        token,
                         0,
                         0);
                 setState(() {
@@ -141,7 +146,7 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
                     .deleteProjectDataById(
                         EndPoint.BASE_URL + EndPoint.DELETE_PROJECTDATABYID,
                         details.id,
-                        "");
+                        token);
                 if (response.httpStatus == 200) {
                   final snackBar = SnackBar(
                       content: Text('projectData succcessfully deleted'));

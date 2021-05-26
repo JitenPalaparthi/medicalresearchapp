@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../helpers/httphelper.dart';
 import 'register.dart';
 import '../models/user.dart';
+import '../components/bottombar.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
@@ -27,14 +28,12 @@ class _UserLoginState extends State<UserLogin> {
       children: <Widget>[
         Text("Medical Research",
             style: TextStyle(
-                color: Colors.grey,
+                color: Colors.grey[700],
                 fontFamily: 'Logofont',
                 fontWeight: FontWeight.bold,
                 fontSize: 40)),
         TextField(
           autofocus: true,
-          obscureText: false,
-          autocorrect: false,
           keyboardType: TextInputType.emailAddress,
           controller: emailEditingContrller,
           decoration: InputDecoration(
@@ -44,17 +43,14 @@ class _UserLoginState extends State<UserLogin> {
                 color: Colors.black,
               ),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  borderSide: BorderSide(
-                      width: 1,
-                      color: Colors.orange,
-                      style: BorderStyle.solid))),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderSide: BorderSide(width: 1, style: BorderStyle.solid))),
         ),
         SizedBox(
-          height: 20,
+          height: 25,
         ),
         TextField(
-          autofocus: false,
+          autofocus: true,
           obscureText: _isObscure,
           keyboardType: TextInputType.text,
           controller: passwordEditingContrller,
@@ -65,11 +61,8 @@ class _UserLoginState extends State<UserLogin> {
                 color: Colors.black,
               ),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  borderSide: BorderSide(
-                      width: 1,
-                      color: Colors.orange,
-                      style: BorderStyle.solid)),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderSide: BorderSide(width: 1, style: BorderStyle.solid)),
               suffixIcon: IconButton(
                   onPressed: () {
                     setState(() {
@@ -80,48 +73,68 @@ class _UserLoginState extends State<UserLogin> {
                       _isObscure ? Icons.visibility : Icons.visibility_off))),
         ),
         SizedBox(
-          height: 20,
+          height: 25,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        Wrap(
           children: <Widget>[
             ElevatedButton(
-              onPressed: onSubmit,
-              child: Text("Login"),
-              // ),
+                onPressed: onSubmit,
+                child: Text("Login"),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.grey[700],
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    textStyle: TextStyle(
+                        fontSize: 30, fontWeight: FontWeight.normal))),
+            SizedBox(
+              width: 10,
             ),
             ElevatedButton(
-              onPressed: () {
-                passwordEditingContrller.text = "";
-                emailEditingContrller.text = "";
-              },
-              child: Text("Reset"),
-              // ),
+                onPressed: () {
+                  passwordEditingContrller.text = "";
+                  emailEditingContrller.text = "";
+                },
+                child: Text("Cancel"),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.grey[700],
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    textStyle:
+                        TextStyle(fontSize: 30, fontWeight: FontWeight.normal))
+                // ),
+                ),
+            SizedBox(
+              width: 10,
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PasswordReset(
-                      email: emailEditingContrller.text ?? "",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PasswordReset(
+                        email: emailEditingContrller.text ?? "",
+                      ),
                     ),
-                  ),
-                ).then((value) {
-                  if (value == true) {
-                    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                        content: Text("Password Reset Successful"),
-                        duration: Duration(milliseconds: 1000)));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                        content: Text("Password Reset Failed"),
-                        duration: Duration(milliseconds: 1000)));
-                  }
-                  // Run the code here using the value
-                });
-              },
-              child: Text("Forgot Password"),
-              // ),
+                  ).then((value) {
+                    if (value == true) {
+                      ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                          content: Text("Password Reset Successful"),
+                          duration: Duration(milliseconds: 1000)));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                          content: Text("Password Reset Failed"),
+                          duration: Duration(milliseconds: 1000)));
+                    }
+                    // Run the code here using the value
+                  });
+                },
+                child: Text("Forgot Password"),
+                // ),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.grey[700],
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    textStyle: TextStyle(
+                        fontSize: 30, fontWeight: FontWeight.normal))),
+            SizedBox(
+              width: 10,
             ),
             ElevatedButton(
                 onPressed: () {
@@ -143,7 +156,15 @@ class _UserLoginState extends State<UserLogin> {
                     // Run the code here using the value
                   });
                 },
-                child: Text("Register")),
+                child: Text("Register"),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.grey[700],
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    textStyle: TextStyle(
+                        fontSize: 30, fontWeight: FontWeight.normal))),
+            SizedBox(
+              width: 10,
+            ),
           ],
         ),
       ],
@@ -187,16 +208,32 @@ class _UserLoginState extends State<UserLogin> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         var userFetch = await HttpHelper().fetchUser(emailEditingContrller.text,
             HttpEndPoints.BASE_URL + HttpEndPoints.GET_USER, result.token);
+        print(userFetch.email);
         await prefs.setString("token", result.token);
         await prefs.setString("name", userFetch.name);
         await prefs.setString("email", userFetch.email);
         await prefs.setString("mobile", userFetch.mobile);
+        await prefs.setString("role", userFetch.role);
+
+        // if (userFetch != null && userFetch.role != "admin") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BottomBar(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(result.message),
+          duration: Duration(milliseconds: 1000),
+        ));
       }
-    } on SocketException catch (exp) {
+    } on SocketException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Something went wrong with the connection"),
         duration: Duration(milliseconds: 1000),
       ));
+      print(e);
     }
   }
 }

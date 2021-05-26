@@ -1,14 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 import '../models/template.dart' as template_model;
 import 'package:http/http.dart' as http;
 
 class Template {
   Future<template_model.Template> getTemplateById(
       String url, String token) async {
-    final response = await http.get(
-      Uri.parse(url),
-      /* headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}*/
-    );
+    final response = await http.get(Uri.parse(url),
+        headers: {HttpHeaders.authorizationHeader: 'Bearer $token'});
     if (response.statusCode == 200) {
       return template_model.Template.fromJson(json.decode(response.body));
     } else {
@@ -19,10 +18,8 @@ class Template {
 
   Future<List<template_model.TemplateMetaData>> getTemplateMetaData(
       String url, String token) async {
-    final response = await http.get(
-      Uri.parse(
-          url), /* headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}*/
-    );
+    final response = await http.get(Uri.parse(url),
+        headers: {HttpHeaders.authorizationHeader: 'Bearer $token'});
     if (response.statusCode == 200) {
       Iterable l = json.decode(response.body);
       if (l != null) {

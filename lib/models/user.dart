@@ -3,7 +3,6 @@ class User {
   final String name;
   final String email;
   final String mobile;
-
   final String role;
   final String password;
   final String status;
@@ -43,6 +42,16 @@ class User {
     map["status"] = status;
     return map;
   }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "email": email,
+        "mobile": mobile,
+        "role": role,
+        "status": status,
+        "lastUpdated": lastUpdated,
+        "password": password
+      };
 }
 
 class UserLogIn {
