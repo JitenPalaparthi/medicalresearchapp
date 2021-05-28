@@ -6,6 +6,13 @@ import 'models/projectData.dart' as model_projectData;
 import 'apis/endpoints.dart';
 import 'components/appbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'dart:html' as html;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'package:flutter/foundation.dart';
 
 class ViewRecordsPage extends StatefulWidget {
   final String title;
@@ -101,7 +108,27 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.download_rounded),
-        onPressed: () {},
+        onPressed: () async {
+          var downloadURL = EndPoint.BASE_URL +
+              EndPoint.DOWNLOAD_PROJECTDATABYID +
+              "/" +
+              _mySelection;
+          if (kIsWeb) {
+            html.AnchorElement anchorElement =
+                new html.AnchorElement(href: downloadURL);
+            anchorElement.download = downloadURL;
+            anchorElement.click();
+          } else {
+            await _downloadFile(
+                EndPoint.BASE_URL +
+                    EndPoint.DOWNLOAD_PROJECTDATABYID +
+                    "/" +
+                    _mySelection,
+                _mySelection + ".xlsx");
+
+            // await http.get(url);
+          }
+        },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25.0))),
       ),
@@ -211,24 +238,32 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
       } else {
         value = element.value;
       }
-      listWidgets.add(_getTextField(value, element.label, element.id));
+      listWidgets.add(_getBoxedContent(value, element.label, element.id));
     });
     return listWidgets;
   }
 
-  Widget _getTextField(String value, String heading, String name) {
+  Widget _getBoxedContent(String value, String heading, String name) {
     return Container(
         width: 150.0,
         margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-        child: TextField(
-          controller: TextEditingController(text: value),
-          readOnly: true,
-          maxLines: 2,
-          decoration: new InputDecoration(
-            border: new OutlineInputBorder(
-                borderSide: new BorderSide(color: Colors.orange, width: 1.0)),
-            labelText: heading,
-          ),
-        ));
+        child: InputDecorator(
+            decoration: InputDecoration(
+              labelText: heading,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            child: Text(value ?? "")));
+  }
+
+  Future<File> _downloadFile(String url, String filename) async {
+    http.Client _client = new http.Client();
+    var req = await _client.get(Uri.parse(url));
+    var bytes = req.bodyBytes;
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$dir/$filename');
+    await file.writeAsBytes(bytes);
+    return file;
   }
 }

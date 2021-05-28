@@ -44,7 +44,7 @@ class UserRegisterState extends State<UserRegister> {
                     labelText: "Username:",
                   ),
                   validator: (str) =>
-                      str.length <= 5 ? "Not a Valid Username!" : null,
+                      str.length <= 3 ? "Not a Valid Username!" : null,
                   onSaved: (str) => _username = str,
                 ),
                 TextFormField(
@@ -53,7 +53,7 @@ class UserRegisterState extends State<UserRegister> {
                     labelText: "Mobile:",
                   ),
                   validator: (str) =>
-                      str.length <= 5 ? "Not a Valid Mobile!" : null,
+                      str.length <= 10 ? "Not a Valid Mobile!" : null,
                   onSaved: (str) => _mobile = str,
                 ),
                 TextFormField(

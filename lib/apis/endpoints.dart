@@ -12,4 +12,6 @@ class EndPoint {
   static const String GETALL_PROJECTDATA = "v1/project/data/getAll";
 
   static const String DELETE_PROJECTDATABYID = "v1/project/data/delete";
+
+  static const String DOWNLOAD_PROJECTDATABYID = "v1/project/data/download";
 }

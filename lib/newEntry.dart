@@ -33,6 +33,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
         EndPoint.BASE_URL + EndPoint.GET_TEMPLATEMETADATA, token);
 
     setState(() {
+      print(token);
       listMetaData = metaData;
       isDDLoaded = true;
     });
@@ -165,7 +166,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
         case "dropDown":
           listWidgets.add(_getDropDown(element, gindex, findex));
           break;
-        case "datepicker":
+        case "datePicker":
           listWidgets.add(_getDatePicker(element, gindex, findex));
           break;
         default:
@@ -185,9 +186,6 @@ class _NewEntryPageState extends State<NewEntryPage> {
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(field.regEx))
             ],
-            // controller: TextEditingController(
-            //     text: templateData.groups[gindex].fields[findex].value),
-            readOnly: false,
             maxLines: 2,
             decoration: new InputDecoration(
               border: new OutlineInputBorder(
@@ -196,12 +194,22 @@ class _NewEntryPageState extends State<NewEntryPage> {
               labelText: field.label,
             ),
             onChanged: (text) {
-              print(text);
               templateData.groups[gindex].fields[findex].value = text;
             }));
   }
 
   Widget _getCheckBox(model_field.Field field, int gindex, findex) {
+    bool val = false;
+    if (templateData.groups[gindex].fields[findex].defaults[0]
+            .toString()
+            .toLowerCase() ==
+        "true") {
+      val = true;
+      templateData.groups[gindex].fields[findex].value = true;
+    } else {
+      val = false;
+      templateData.groups[gindex].fields[findex].value = false;
+    }
     return Container(
       width: 300,
       height: 75,
@@ -216,11 +224,10 @@ class _NewEntryPageState extends State<NewEntryPage> {
         child: Checkbox(
           key: Key(field.id),
           checkColor: Colors.black,
-          value: templateData.groups[gindex].fields[findex].value ?? false,
+          value: val,
           onChanged: (value) {
             setState(() {
               templateData.groups[gindex].fields[findex].value = value;
-              print(value);
             });
           },
         ),
