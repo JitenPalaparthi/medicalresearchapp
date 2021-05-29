@@ -199,9 +199,23 @@ class _UserLoginState extends State<UserLogin> {
           duration: Duration(milliseconds: 1000),
         ));
       }
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text(EndPoint.BASE_URL),
+      //   duration: Duration(milliseconds: 1000),
+      // ));
+
       var resp = await http.get(Uri.parse(EndPoint.BASE_URL + "ping"));
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text(EndPoint.BASE_URL),
+      //   duration: Duration(milliseconds: 1000),
+      // ));
       if (resp.body == "pong") {
         print("Yes getting connected");
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("not connected to the following server"),
+          duration: Duration(milliseconds: 1000),
+        ));
       }
       UserLogIn user = new UserLogIn(
           email: emailEditingContrller.text,
