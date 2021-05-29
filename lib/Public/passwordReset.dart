@@ -1,6 +1,7 @@
 import '../helpers/httphelper.dart';
 import '../models/user.dart';
 import 'package:flutter/material.dart';
+import '../apis/endpoints.dart';
 
 class PasswordReset extends StatefulWidget {
   final String email;
@@ -58,7 +59,7 @@ class PasswordResetState extends State<PasswordReset> {
                       str.length <= 3 ? "Not a Valid Code!" : null,
                   onSaved: (str) => _verifyCode = str,
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Text("Submit"),
                   onPressed: onSubmit,
                 ),
@@ -75,7 +76,7 @@ class PasswordResetState extends State<PasswordReset> {
       ResetPassword resetPassword = new ResetPassword(
           email: _email, verifyCode: _verifyCode, password: _password);
       var result = await HttpHelper().post(
-          HttpEndPoints.BASE_URL + HttpEndPoints.RESETPASSWORD,
+          EndPoint.BASE_URL + EndPoint.RESETPASSWORD,
           body: resetPassword.toMap());
       if (result.status == "success") {
         Navigator.pop(context, true);

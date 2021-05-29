@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../helpers/httphelper.dart';
+import '../apis/endpoints.dart';
 import '../models/user.dart' as user_model;
 import '../components/appbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,7 @@ class _UserPageState extends State<UserPage> {
   bool isloaded = false;
   List<user_model.User> data = []; //edited line
   final mainKey = GlobalKey<ScaffoldState>();
-  final String url = HttpEndPoints.BASE_URL + HttpEndPoints.GET_USERS;
+  final String url = EndPoint.BASE_URL + EndPoint.GET_USERS;
 
   void getInit() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

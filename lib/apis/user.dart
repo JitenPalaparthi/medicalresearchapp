@@ -1,4 +1,5 @@
 import '../helpers/httphelper.dart';
+import 'endpoints.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../models/response.dart';
@@ -32,7 +33,7 @@ class User {
 
   Future<GeneralResponse> updateUserById(
       String id, String token, Map<String, dynamic> body) async {
-    var url = HttpEndPoints.BASE_URL + HttpEndPoints.UPDATE_USER_BY_ID;
+    var url = EndPoint.BASE_URL + EndPoint.UPDATE_USER_BY_ID;
     var response = await http
         .put(Uri.parse(url + id), body: JsonEncoder().convert(body), headers: {
       "accept": "application/json",

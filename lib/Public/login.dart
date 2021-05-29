@@ -1,6 +1,8 @@
 import 'passwordReset.dart';
 import 'package:flutter/material.dart';
 import '../helpers/httphelper.dart';
+import '../apis/endpoints.dart';
+
 import 'register.dart';
 import '../models/user.dart';
 import '../components/bottombar.dart';
@@ -8,6 +10,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class UserLogin extends StatefulWidget {
   @override
@@ -196,18 +199,20 @@ class _UserLoginState extends State<UserLogin> {
           duration: Duration(milliseconds: 1000),
         ));
       }
-
+      var resp = await http.get(Uri.parse(EndPoint.BASE_URL + "ping"));
+      if (resp.body == "pong") {
+        print("Yes getting connected");
+      }
       UserLogIn user = new UserLogIn(
           email: emailEditingContrller.text,
           password: passwordEditingContrller.text);
-      var result = await HttpHelper().post(
-          HttpEndPoints.BASE_URL + HttpEndPoints.SIGN_IN,
-          body: user.toMap());
+      var result = await HttpHelper()
+          .post(EndPoint.BASE_URL + EndPoint.SIGN_IN, body: user.toMap());
 
       if (result.httpStatus == 200 && result.status == "success") {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         var userFetch = await HttpHelper().fetchUser(emailEditingContrller.text,
-            HttpEndPoints.BASE_URL + HttpEndPoints.GET_USER, result.token);
+            EndPoint.BASE_URL + EndPoint.GET_USER, result.token);
         print(userFetch.email);
         await prefs.setString("token", result.token);
         await prefs.setString("name", userFetch.name);

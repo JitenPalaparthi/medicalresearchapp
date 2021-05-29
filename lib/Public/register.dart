@@ -1,6 +1,7 @@
 import '../helpers/httphelper.dart';
 import '../models/user.dart';
 import 'package:flutter/material.dart';
+import '../apis/endpoints.dart';
 
 class UserRegister extends StatefulWidget {
   // In the constructor, require a Todo.
@@ -97,7 +98,7 @@ class UserRegisterState extends State<UserRegister> {
         role: "system",
       );
       var result = await HttpHelper().post(
-        HttpEndPoints.BASE_URL + HttpEndPoints.REGISTER,
+        EndPoint.BASE_URL + EndPoint.REGISTER,
         body: user.toMap(),
       );
       if (result.status == "success") {
