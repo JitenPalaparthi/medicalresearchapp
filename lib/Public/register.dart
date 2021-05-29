@@ -53,7 +53,7 @@ class UserRegisterState extends State<UserRegister> {
                     labelText: "Mobile:",
                   ),
                   validator: (str) =>
-                      str.length <= 10 ? "Not a Valid Mobile!" : null,
+                      str.length <= 9 ? "Not a Valid Mobile!" : null,
                   onSaved: (str) => _mobile = str,
                 ),
                 TextFormField(

@@ -1,5 +1,6 @@
 class EndPoint {
-  static const String BASE_URL = "http://127.0.0.1:50061/";
+  static const String BASE_URL = "http://medicalResearch_service:50061/";
+  //static const String BASE_URL = "http://127.0.0.1:50061/";
 
   // Template
   static const String GET_TEMPLATEBYID = "v1/template/get/";

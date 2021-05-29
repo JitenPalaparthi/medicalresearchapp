@@ -26,7 +26,7 @@ class ViewRecordsPage extends StatefulWidget {
 
 class _ViewRecordsPageState extends State<ViewRecordsPage> {
   String token, _mySelection, role, email;
-  bool isLoaded = false, isDDLoaded = false;
+  bool isLoaded = false, isDDLoaded = false, isRowView = false;
   List<model_projectData.ProjectData> projectData = [];
   List<model_template.TemplateMetaData> listMetaData = [];
   final mainKey = GlobalKey<ScaffoldState>();
@@ -60,39 +60,60 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
     return Scaffold(
       appBar: setAppbar(context, "View Medical Research Data"),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-            margin: EdgeInsets.fromLTRB(20, 5, 5, 5),
-            child: new DropdownButton(
-              items: listMetaData != null
-                  ? listMetaData.map((item) {
-                      return new DropdownMenuItem(
-                        child: new Text(item.project),
-                        value: item.id,
-                      );
-                    }).toList()
-                  : null,
-              hint: Text("Select Project"),
-              onChanged: (newVal) async {
+        Row(
+          children: [
+            Container(
+                margin: EdgeInsets.fromLTRB(20, 5, 5, 5),
+                child: new DropdownButton(
+                  items: listMetaData != null
+                      ? listMetaData.map((item) {
+                          return new DropdownMenuItem(
+                            child: new Text(item.project),
+                            value: item.id,
+                          );
+                        }).toList()
+                      : null,
+                  hint: Text("Select Project"),
+                  onChanged: (newVal) async {
+                    setState(() {
+                      _mySelection = newVal;
+                    });
+                    var pData = await api_projectData.ProjectData()
+                        .getProjectDataByTemplateId(
+                            EndPoint.BASE_URL +
+                                EndPoint.GETALL_PROJECTDATA +
+                                "/0/0/?_templateId=" +
+                                _mySelection,
+                            token,
+                            0,
+                            0);
+                    setState(() {
+                      projectData = pData;
+                      isLoaded = true;
+                    });
+                  },
+                  value: _mySelection,
+                )),
+            IconButton(
+              icon: Icon(Icons.view_column),
+              onPressed: () {
                 setState(() {
-                  _mySelection = newVal;
-                });
-                var pData = await api_projectData.ProjectData()
-                    .getProjectDataByTemplateId(
-                        EndPoint.BASE_URL +
-                            EndPoint.GETALL_PROJECTDATA +
-                            "/0/0/?_templateId=" +
-                            _mySelection,
-                        token,
-                        0,
-                        0);
-                setState(() {
-                  projectData = pData;
-                  isLoaded = true;
+                  isRowView = false;
                 });
               },
-              value: _mySelection,
-            )),
-        isLoaded
+              tooltip: "Column View",
+            ),
+            IconButton(
+                icon: Icon(Icons.table_rows),
+                onPressed: () {
+                  setState(() {
+                    isRowView = true;
+                  });
+                },
+                tooltip: "Row View"),
+          ],
+        ),
+        isLoaded && !isRowView
             ? Container(
                 child: Flexible(
                 child: ListView.builder(
@@ -101,9 +122,19 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
                   itemBuilder: _itemBuilder,
                 ),
               ))
-            : Container(
-                margin: EdgeInsets.fromLTRB(20, 5, 5, 5),
-                child: Text("Select a template to read the data.")),
+            : isLoaded && projectData.length > 0 && isRowView
+                ? Container(
+                    child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                            showCheckboxColumn: true,
+                            columns: _getColumns(projectData[0].fieldData),
+                            rows: projectData.map((item) {
+                              return _getRow(item.fieldData);
+                            }).toList())))
+                : Container(
+                    margin: EdgeInsets.fromLTRB(20, 5, 5, 5),
+                    child: Text("Select a template to read the data.")),
       ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
@@ -265,5 +296,26 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
     File file = new File('$dir/$filename');
     await file.writeAsBytes(bytes);
     return file;
+  }
+
+  List<DataColumn> _getColumns(List<model_projectData.FieldData> data) {
+    List<DataColumn> columns = [];
+    data.forEach((element) {
+      columns.add(DataColumn(
+        label: Text(
+          element.label,
+          style: TextStyle(fontStyle: FontStyle.italic),
+        ),
+      ));
+    });
+    return columns;
+  }
+
+  DataRow _getRow(List<model_projectData.FieldData> data) {
+    List<DataCell> cells = [];
+    data.forEach((element) {
+      cells.add(DataCell(Text(element.value.toString())));
+    });
+    return DataRow(cells: cells);
   }
 }
