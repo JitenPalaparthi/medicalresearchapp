@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'apis/template.dart' as api_template;
 import 'apis/projectData.dart' as api_projectData;
+import 'apis/user.dart' as api_user;
 import 'models/template.dart' as model_template;
 import 'models/projectData.dart' as model_projectData;
 import 'apis/endpoints.dart';
@@ -38,6 +39,13 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
     role = prefs.getString("role");
     var metaData = await api_template.Template().getTemplateMetaData(
         EndPoint.BASE_URL + EndPoint.GET_TEMPLATEMETADATA, token);
+
+    var data = await api_user.User()
+        .getSummary(EndPoint.BASE_URL + EndPoint.GETSUMMARY, token);
+    data.forEach((key, value) {
+      print(key);
+      print(value);
+    });
 
     setState(() {
       listMetaData = metaData;

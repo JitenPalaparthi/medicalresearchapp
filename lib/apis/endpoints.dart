@@ -1,7 +1,7 @@
 class EndPoint {
-  static const String BASE_URL = "http://medicalResearch_service:50061/";
-  //static const String BASE_URL = "http://127.0.0.1:50061/";
-
+  //static const String BASE_URL = "http://medicalResearch_service:50061/";
+  static const String BASE_URL = "http://127.0.0.1:50061/";
+  // static const String BASE_URL = "http://51.75.161.66:50061/";
   // public user
 
   static const String SIGN_IN = "v1/public/user/mobile/signin";
@@ -10,6 +10,7 @@ class EndPoint {
   static const String GET_USER = "v1/user/get/";
   static const String GET_USERS = "v1/user/getAll/";
   static const String UPDATE_USER_BY_ID = "v1/user/update/";
+  static const String GETSUMMARY = "v1/user/summary";
 
   // Template
   static const String GET_TEMPLATEBYID = "v1/template/get/";

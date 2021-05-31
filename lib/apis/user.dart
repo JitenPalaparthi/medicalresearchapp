@@ -43,4 +43,15 @@ class User {
     return GeneralResponse.fromJson(
         json.decode(response.body), response.statusCode);
   }
+
+  Future<Map<String, dynamic>> getSummary(String url, String token) async {
+    final response = await http.get(Uri.parse(url),
+        headers: {HttpHeaders.authorizationHeader: 'Bearer $token'});
+    if (response.statusCode == 200) {
+      return Map<String, dynamic>.from(json.decode(response.body));
+    } else {
+      // If that call was not successful, throw an error.
+      return null;
+    }
+  }
 }
