@@ -87,13 +87,13 @@ class _HomePageState extends State<HomePage> {
                           DataColumn(
                             label: Text(
                               'Project',
-                              style: TextStyle(fontStyle: FontStyle.italic),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           DataColumn(
                             label: Text(
                               'Data Count',
-                              style: TextStyle(fontStyle: FontStyle.italic),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
