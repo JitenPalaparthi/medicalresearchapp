@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+//fontSize: 20.0,
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,47 +67,83 @@ class _HomePageState extends State<HomePage> {
       body: isLoaded
           ? Container(
               child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
+                    width: 300,
                     margin: EdgeInsets.fromLTRB(20, 10, 10, 20),
-                    child: Row(children: [
-                      Text("Total number of users:"),
-                      Text(summaryData["no_of_users"].toString() ?? "")
-                    ])),
+                    child: Text("Summary",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ))),
                 Container(
+                    width: 300,
                     margin: EdgeInsets.fromLTRB(20, 10, 10, 20),
-                    child: Row(children: [
-                      Text("Total number of projects:"),
-                      Text(summaryData["no_of_projects"].toString() ?? "")
-                    ])),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Total number of users:",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                              )),
+                          Text(summaryData["no_of_users"].toString() ?? "",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                              ))
+                        ])),
                 Container(
+                    width: 300,
                     margin: EdgeInsets.fromLTRB(20, 10, 10, 20),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Total number of projects:",
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(summaryData["no_of_projects"].toString() ?? "",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                              ))
+                        ])),
+                Container(
+
+                    //margin: EdgeInsets.fromLTRB(20, 10, 10, 20),
                     child: FutureBuilder(builder: (context, snapshot) {
-                      return DataTable(
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Text(
-                              'Project',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Data Count',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                        rows: groupData.length > 0
-                            ? groupData.map((item) {
-                                return DataRow(cells: <DataCell>[
-                                  DataCell(Text(item["project"].toString())),
-                                  DataCell(Text(item["count"].toString())),
-                                ]);
-                              }).toList()
-                            : null,
-                      );
-                    })),
+                  return DataTable(
+                    showBottomBorder: true,
+                    columns: const <DataColumn>[
+                      DataColumn(
+                        label: Text('Project',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15.0)),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Data Count',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15.0),
+                        ),
+                      ),
+                    ],
+                    rows: groupData.length > 0
+                        ? groupData.map((item) {
+                            return DataRow(cells: <DataCell>[
+                              DataCell(Text(item["project"].toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0))),
+                              DataCell(Text(item["count"].toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0))),
+                            ]);
+                          }).toList()
+                        : null,
+                  );
+                })),
               ],
             ))
           : Container(),
