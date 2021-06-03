@@ -293,7 +293,10 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            child: Text(value ?? "")));
+            child: Text(
+              value ?? "",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            )));
   }
 
   Future<File> _downloadFile(String url, String filename) async {
