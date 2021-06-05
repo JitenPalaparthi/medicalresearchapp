@@ -289,11 +289,15 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
         child: InputDecorator(
             decoration: InputDecoration(
               labelText: heading,
+              labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            child: Text(value ?? "")));
+            child: Text(
+              value ?? "",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            )));
   }
 
   Future<File> _downloadFile(String url, String filename) async {
@@ -325,5 +329,12 @@ class _ViewRecordsPageState extends State<ViewRecordsPage> {
       cells.add(DataCell(Text(element.value.toString())));
     });
     return DataRow(cells: cells);
+  }
+
+  String _boldtext(String heading) {
+    return Text(
+      heading,
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    ).toString();
   }
 }

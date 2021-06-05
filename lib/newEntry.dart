@@ -18,7 +18,7 @@ class NewEntryPage extends StatefulWidget {
 class _NewEntryPageState extends State<NewEntryPage> {
   final mainKey = GlobalKey<ScaffoldState>();
 
-  String _mySelection, token, role, email;
+  String _mySelection, token, role, email, name;
   bool isLoaded = false, isDDLoaded = false;
   model_template.Template templateData = new model_template.Template();
   model_projectData.ProjectData projectData;
@@ -28,6 +28,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString("token");
     email = prefs.getString("email");
+    name = prefs.getString("name");
     role = prefs.getString("role");
     var metaData = await api_template.Template().getTemplateMetaData(
         EndPoint.BASE_URL + EndPoint.GET_TEMPLATEMETADATA, token);
@@ -109,6 +110,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
   void submit() async {
     projectData = new model_projectData.ProjectData();
     projectData.fieldData = [];
+    projectData.enterdBy = name;
     try {
       projectData.templateId = templateData.id;
       templateData.groups.forEach((element) {

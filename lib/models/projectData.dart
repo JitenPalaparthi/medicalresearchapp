@@ -1,7 +1,7 @@
 class ProjectData {
   final String id;
   String templateId;
-
+  String enterdBy;
   List<FieldData> fieldData;
   final String status;
   final String lastUpdated;
@@ -9,6 +9,7 @@ class ProjectData {
   ProjectData(
       {this.id,
       this.templateId,
+      this.enterdBy,
       this.fieldData,
       this.status,
       this.lastUpdated});
@@ -21,6 +22,7 @@ class ProjectData {
     return ProjectData(
       id: json['id'],
       templateId: json['templateId'],
+      enterdBy: json['enteredBy'],
       fieldData: fieldData,
       status: json['status'],
       lastUpdated: json['lastUpdated'],
@@ -32,6 +34,7 @@ class ProjectData {
       'id': id,
       'templateId': templateId,
       'fieldData': fieldData,
+      'enteredBy': enterdBy,
       'status': status,
       'lastUpdated': lastUpdated,
     };
@@ -42,6 +45,7 @@ class ProjectData {
     map["id"] = id;
     map["templateId"] = templateId;
     map["fieldData"] = fieldData;
+    map["enteredBy"] = enterdBy;
     map["status"] = status;
     map["lastUpdated"] = lastUpdated;
     return map;
